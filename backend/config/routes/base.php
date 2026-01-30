@@ -45,6 +45,12 @@ return static function (RouteCollectorProxy $app) {
 
     $app->post('/login/webauthn', Controller\Frontend\Account\WebAuthn\PostValidationAction::class);
 
+    $app->get('/oauth/authorize/{provider}', Controller\Frontend\Account\OAuthAuthorizeAction::class)
+        ->setName('account:oauth:authorize');
+
+    $app->get('/oauth/callback/{provider}', Controller\Frontend\Account\OAuthCallbackAction::class)
+        ->setName('account:oauth:callback');
+
     $app->group(
         '/setup',
         function (RouteCollectorProxy $group) {

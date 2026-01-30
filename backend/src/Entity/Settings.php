@@ -36,12 +36,14 @@ final class Settings implements Stringable
     public const string GROUP_BRANDING = 'branding';
     public const string GROUP_BACKUP = 'backup';
     public const string GROUP_GEO_IP = 'geo_ip';
+    public const string GROUP_OAUTH = 'oauth';
 
     public const array VALID_GROUPS = [
         self::GROUP_GENERAL,
         self::GROUP_BRANDING,
         self::GROUP_BACKUP,
         self::GROUP_GEO_IP,
+        self::GROUP_OAUTH,
     ];
 
     #[
@@ -584,6 +586,23 @@ final class Settings implements Stringable
     {
         $ipSource = $this->ip_source ?? IpSources::default();
         return $ipSource->getIp($request);
+    }
+
+    #[
+        OA\Property(description: "Whether OAuth authentication is enabled.", example: "false"),
+        ORM\Column,
+        Serializer\Groups(self::GROUP_OAUTH)
+    ]
+    public bool $oauth_enabled = false;
+
+    #[
+        OA\Property(description: "OAuth configuration for enabled providers.", example: "{}"),
+        ORM\Column(type: 'json', nullable: false),
+        Serializer\Groups(self::GROUP_OAUTH)
+    ]
+    public array $oauth_providers = [] {
+        get => $this->oauth_providers ?? [];
+        set(array|null $value) => $this->oauth_providers = $value ?? [];
     }
 
     public function __toString(): string

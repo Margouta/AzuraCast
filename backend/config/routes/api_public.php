@@ -47,6 +47,10 @@ return static function (RouteCollectorProxy $group) {
         ->setName('api:index:time')
         ->add(new Middleware\Cache\SetCache(1));
 
+    $group->get('/auth/oauth/providers', Controller\Api\OAuthProvidersAction::class)
+        ->setName('api:auth:oauth:providers')
+        ->add(new Middleware\Cache\SetCache(3600));
+
     $group->get(
         '/nowplaying',
         Controller\Api\NowPlayingAction::class

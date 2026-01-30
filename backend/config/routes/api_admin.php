@@ -259,6 +259,31 @@ return static function (RouteCollectorProxy $group) {
                 }
             )->add(new Middleware\Permissions(GlobalPermissions::Settings));
 
+            $group->group(
+                '/oauth-settings',
+                function (RouteCollectorProxy $group) {
+                    $group->get(
+                        '',
+                        Controller\Api\Admin\OAuthSettingsController::class . ':listAction'
+                    )->setName('api:admin:oauth-settings');
+
+                    $group->get(
+                        '/{provider}',
+                        Controller\Api\Admin\OAuthSettingsController::class . ':getAction'
+                    )->setName('api:admin:oauth-setting');
+
+                    $group->post(
+                        '',
+                        Controller\Api\Admin\OAuthSettingsController::class . ':createAction'
+                    );
+
+                    $group->delete(
+                        '/{provider}',
+                        Controller\Api\Admin\OAuthSettingsController::class . ':deleteAction'
+                    );
+                }
+            )->add(new Middleware\Permissions(GlobalPermissions::Settings));
+
             $adminApiEndpoints = [
                 [
                     'custom_field',

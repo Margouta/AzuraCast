@@ -34,6 +34,14 @@ export function useAdminMenu() {
                     visible: () => userAllowed(GlobalPermissions.Settings)
                 },
                 {
+                    key: 'oauth',
+                    label: $gettext('OAuth Authentication'),
+                    url: {
+                        name: 'admin:oauth:index'
+                    },
+                    visible: () => userAllowed(GlobalPermissions.Settings)
+                },
+                {
                     key: 'logs',
                     label: $gettext('System Logs'),
                     url: {

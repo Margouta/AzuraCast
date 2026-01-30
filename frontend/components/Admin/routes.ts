@@ -27,6 +27,11 @@ export default function useAdminRoutes(): RouteRecordRaw[] {
                     name: 'admin:branding:index'
                 },
                 {
+                    path: 'oauth',
+                    component: () => import('~/components/Admin/OAuth.vue'),
+                    name: 'admin:oauth:index'
+                },
+                {
                     path: 'logs',
                     component: () => import('~/components/Admin/Logs.vue'),
                     name: 'admin:logs:index'

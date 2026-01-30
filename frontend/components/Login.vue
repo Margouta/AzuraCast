@@ -101,6 +101,27 @@
                     </div>
                 </form>
 
+                <div
+                    v-if="oauthEnabled && oauthProviders.length > 0"
+                    class="mt-4 pt-3 border-top"
+                >
+                    <p class="text-center text-muted small mb-3">
+                        {{ $gettext('Or sign in with') }}
+                    </p>
+                    <div class="oauth-buttons d-flex gap-2 justify-content-center flex-wrap">
+                        <a
+                            v-for="provider in oauthProviders"
+                            :key="provider"
+                            :href="`/oauth/authorize/${provider}`"
+                            :title="$gettext('Sign in with {provider}', {provider: provider.charAt(0).toUpperCase() + provider.slice(1)})"
+                            :class="['btn', 'btn-outline-secondary', 'btn-sm', `oauth-btn-${provider}`]"
+                        >
+                            <i :class="`fab fa-${provider}`"/>
+                            {{ provider.charAt(0).toUpperCase() + provider.slice(1) }}
+                        </a>
+                    </div>
+                </div>
+
                 <form
                     v-if="passkeySupported"
                     id="webauthn-form"
@@ -165,6 +186,8 @@ const $webAuthnForm = useTemplateRef('$webAuthnForm');
 
 const validateArgs = ref<object | null>(null);
 const validateData = ref<string | null>(null);
+const oauthEnabled = ref<boolean>(false);
+const oauthProviders = ref<string[]>([]);
 
 const handleValidationResponse = async (validateResp: ProcessedValidateResponse) => {
     validateData.value = JSON.stringify(validateResp);
@@ -186,6 +209,15 @@ const logInWithPasskey = async () => {
 };
 
 onMounted(async () => {
+    // Load OAuth providers
+    try {
+        const oauthResponse = (await axios.get<{oauth_enabled: boolean, providers: string[]}>('/api/auth/oauth/providers')).data;
+        oauthEnabled.value = oauthResponse.oauth_enabled;
+        oauthProviders.value = oauthResponse.providers;
+    } catch (e) {
+        console.error('Failed to load OAuth providers:', e);
+    }
+
     const isConditionalSupported = await passkeyConditionalSupported();
     if (!isConditionalSupported) {
         return;

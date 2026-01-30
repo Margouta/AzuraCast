@@ -184,6 +184,14 @@ class User implements Stringable, IdentifiableEntityInterface
     ]
     public private(set) Collection $login_tokens;
 
+    /** @var Collection<int, UserOAuthAccount> */
+    #[
+        ORM\OneToMany(targetEntity: UserOAuthAccount::class, mappedBy: 'user'),
+        Serializer\Groups([EntityGroupsInterface::GROUP_ADMIN, EntityGroupsInterface::GROUP_ALL]),
+        DeepNormalize(true)
+    ]
+    public private(set) Collection $oAuthAccounts;
+
     public function __construct()
     {
         $this->created_at = time();
@@ -193,6 +201,7 @@ class User implements Stringable, IdentifiableEntityInterface
         $this->api_keys = new ArrayCollection();
         $this->passkeys = new ArrayCollection();
         $this->login_tokens = new ArrayCollection();
+        $this->oAuthAccounts = new ArrayCollection();
     }
 
     #[ORM\PreUpdate]
@@ -229,6 +238,7 @@ class User implements Stringable, IdentifiableEntityInterface
         $this->api_keys = new ArrayCollection();
         $this->passkeys = new ArrayCollection();
         $this->login_tokens = new ArrayCollection();
+        $this->oAuthAccounts = new ArrayCollection();
     }
 
     public function __toString(): string
